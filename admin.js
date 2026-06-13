@@ -91,10 +91,6 @@ function rowHtml(m, i) {
     <td class="dash" aria-hidden="true">–</td>
     <td data-label="Mål B"><input class="goal" name="gb" type="number" min="0" inputmode="numeric" value="${esc(m.gb ?? 0)}" aria-label="Mål B"></td>
     <td data-label="Hold B" class="side">${sideCell('b', m)}</td>
-    ${card(m.ca, 'ca', 'Hjørne A')}
-    ${card(m.cb, 'cb', 'Hjørne B')}
-    ${card(m.ka, 'ka', 'Målspark A')}
-    ${card(m.kb, 'kb', 'Målspark B')}
     ${card(m.ya, 'ya', 'Gul A')}
     ${card(m.ra, 'ra', 'Rød A')}
     ${card(m.yb, 'yb', 'Gul B')}
@@ -107,6 +103,10 @@ function rowHtml(m, i) {
 
 function renderTable() {
   const matches = state.data.matches || [];
+  // Show fixtures in date order. Stable sort keeps same-day matches in their
+  // existing order; sorting the stored array keeps row indices aligned for
+  // delete/save (syncFromDom rebuilds from DOM order anyway).
+  matches.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
   const played = matches.filter(m => m.played).length;
 
   const body = matches.length
@@ -130,7 +130,6 @@ function renderTable() {
         <table class="matches-table">
           <thead><tr>
             <th>Dato</th><th>Hold A</th><th>Mål</th><th></th><th>Mål</th><th>Hold B</th>
-            <th>Hj A</th><th>Hj B</th><th>Ms A</th><th>Ms B</th>
             <th>Gul A</th><th>Rød A</th><th>Gul B</th><th>Rød B</th><th>Spillet</th><th></th>
           </tr></thead>
           <tbody id="rows">${body}</tbody>
@@ -189,7 +188,6 @@ function syncFromDom() {
       a: a.id, aName: a.name,
       b: b.id, bName: b.name,
       ga: n('ga'), gb: n('gb'),
-      ca: n('ca'), cb: n('cb'), ka: n('ka'), kb: n('kb'),
       ya: n('ya'), ra: n('ra'), yb: n('yb'), rb: n('rb'),
       played: $('input.played', tr).checked,
     };
@@ -200,7 +198,7 @@ function onAdd() {
   syncFromDom();
   state.data.matches.push({
     id: uid(), date: today(), a: '', aName: '', b: '', bName: '',
-    ga: 0, gb: 0, ca: 0, cb: 0, ka: 0, kb: 0, ya: 0, ra: 0, yb: 0, rb: 0, played: false,
+    ga: 0, gb: 0, ya: 0, ra: 0, yb: 0, rb: 0, played: false,
   });
   renderTable();
 }

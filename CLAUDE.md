@@ -47,11 +47,11 @@ runtime is the Firestore `state/current` document.** Its shape:
   `code` is the ISO flag filename in `assets/flags/<code>.svg` (e.g. England = `gb-eng`).
 - `players`: `{ id, name, photo, teams: [twoTeamIds] }`. `photo` is a filename in
   `assets/players/` (missing photos fall back to the silhouette automatically).
-- `matches`: `[{ id, date, a, aName, b, bName, ga, gb, ca, cb, ka, kb, ya, ra, yb, rb,
+- `matches`: `[{ id, date, a, aName, b, bName, ga, gb, ya, ra, yb, rb,
   played }]` — one row per match; the **whole group-stage program is pre-loaded** in
   `data.json`. `a`/`b` are rostered teamIds (or `""` for a non-rostered opponent, whose
-  display name then lives in `aName`/`bName`); `ga`/`gb` goals, `ca`/`cb` corners
-  (hjørnespark), `ka`/`kb` goal kicks (målspark), `y*`/`r*` cards, `date` for reference.
+  display name then lives in `aName`/`bName`); `ga`/`gb` goals, `y*`/`r*` cards,
+  `date` for reference.
   Per-side stats sum into each team via `addSide`; columns are in `COLUMNS`/`TEAM_COLUMNS`.
   **`played`
   gates the standings: only `played: true` rows are counted** (`teamStatsFrom` skips

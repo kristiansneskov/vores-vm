@@ -17,8 +17,6 @@ const COLUMNS = [
   { key: 'goalsFor',     label: 'MF',      full: 'Mål for',       dir: 'desc' },
   { key: 'goalsAgainst', label: 'MI',      full: 'Mål imod',      dir: 'asc'  },
   { key: 'goalDiff',     label: 'Diff',    full: 'Målforskel',    dir: 'desc', signed: true },
-  { key: 'corners',      label: 'Hj',      full: 'Hjørnespark',   dir: 'desc' },
-  { key: 'goalKicks',    label: 'Ms',      full: 'Målspark',      dir: 'desc' },
   { key: 'yellow',       label: 'Gul',     full: 'Gule kort',     dir: 'asc'  },
   { key: 'red',          label: 'Rød',     full: 'Røde kort',     dir: 'asc'  },
 ];
@@ -32,8 +30,6 @@ const TEAM_COLUMNS = [
   { key: 'goalsFor',     label: 'MF',   full: 'Mål for',    dir: 'desc' },
   { key: 'goalsAgainst', label: 'MI',   full: 'Mål imod',   dir: 'asc'  },
   { key: 'goalDiff',     label: 'Diff', full: 'Målforskel', dir: 'desc', signed: true },
-  { key: 'corners',      label: 'Hj',   full: 'Hjørnespark', dir: 'desc' },
-  { key: 'goalKicks',    label: 'Ms',   full: 'Målspark',   dir: 'desc' },
   { key: 'yellow',       label: 'Gul',  full: 'Gule kort',  dir: 'asc'  },
   { key: 'red',          label: 'Rød',  full: 'Røde kort',  dir: 'asc'  },
   { key: 'points',       label: 'P',    full: 'Point',      dir: 'desc' },
@@ -89,13 +85,12 @@ function signClass(key, val) {
 /* ---------- data ---------- */
 
 // Add one rostered side of a match into the running team-stat object.
-function addSide(teams, id, gf, ga, yellow, red, corners, goalKicks) {
+function addSide(teams, id, gf, ga, yellow, red) {
   const t = teams[id];
   if (!t) return;                       // non-rostered opponent → ignored
   t.played++;
   t.goalsFor += gf; t.goalsAgainst += ga;
   t.yellow += yellow; t.red += red;
-  t.corners += corners; t.goalKicks += goalKicks;
   if (gf > ga) t.won++; else if (gf === ga) t.drawn++; else t.lost++;
 }
 
@@ -107,16 +102,16 @@ function teamStatsFrom(data) {
   const matches = data.matches || [];
   if (!matches.length) {
     const out = {};
-    for (const [id, t] of Object.entries(teams)) out[id] = { corners: 0, goalKicks: 0, ...t };
+    for (const [id, t] of Object.entries(teams)) out[id] = { ...t };
     return out;
   }
-  const n = () => ({ played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, yellow: 0, red: 0, corners: 0, goalKicks: 0 });
+  const n = () => ({ played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, yellow: 0, red: 0 });
   const out = {};
   for (const [id, t] of Object.entries(teams)) out[id] = { name: t.name, code: t.code, ...n() };
   for (const m of matches) {
     if (!m.played) continue;            // fixtures (not yet played) don't count
-    addSide(out, m.a, +m.ga || 0, +m.gb || 0, +m.ya || 0, +m.ra || 0, +m.ca || 0, +m.ka || 0);
-    addSide(out, m.b, +m.gb || 0, +m.ga || 0, +m.yb || 0, +m.rb || 0, +m.cb || 0, +m.kb || 0);
+    addSide(out, m.a, +m.ga || 0, +m.gb || 0, +m.ya || 0, +m.ra || 0);
+    addSide(out, m.b, +m.gb || 0, +m.ga || 0, +m.yb || 0, +m.rb || 0);
   }
   return out;
 }
@@ -133,8 +128,6 @@ function aggregate(player, teams, w) {
     goalsAgainst: sum(t => t.goalsAgainst),
     yellow:       sum(t => t.yellow),
     red:          sum(t => t.red),
-    corners:      sum(t => t.corners),
-    goalKicks:    sum(t => t.goalKicks),
   };
   totals.points = totals.won * 3 + totals.drawn;
   totals.goalDiff = totals.goalsFor - totals.goalsAgainst;
@@ -387,8 +380,6 @@ function teamStatRows(t) {
     ['Point', pts],
     ['Mål', `${t.goalsFor} : ${t.goalsAgainst}`],
     ['Målforskel', (gd > 0 ? '+' : '') + gd],
-    ['Hjørnespark', t.corners || 0],
-    ['Målspark', t.goalKicks || 0],
     ['Gule kort', t.yellow],
     ['Røde kort', t.red],
   ];
