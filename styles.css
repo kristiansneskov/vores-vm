@@ -423,6 +423,7 @@ main.wrap { padding-top: 18px; padding-bottom: 40px; }
   cursor: pointer;
 }
 .ghost-btn:disabled { opacity: .5; cursor: default; }
+.ghost-btn.danger { color: var(--bad); border-color: var(--bad); }
 
 .entry-foot {
   margin-top: 16px; padding-top: 14px;

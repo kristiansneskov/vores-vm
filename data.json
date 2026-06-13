@@ -26,10 +26,10 @@
   },
 
   "players": [
-    { "id": "kristan",  "name": "Kristan",  "photo": "kristan.jpg",  "teams": ["civ", "tur"] },
-    { "id": "laurits",  "name": "Laurits",  "photo": "laurits.jpg",  "teams": ["can", "cro"] },
-    { "id": "august",   "name": "August",   "photo": "august.jpg",   "teams": ["mar", "ned"] },
-    { "id": "nora",     "name": "Nora",     "photo": "nora.jpg",     "teams": ["nzl", "kor"] },
+    { "id": "kristian",  "name": "Kristian",  "photo": "kristian.png",  "teams": ["civ", "tur"] },
+    { "id": "laurits",  "name": "Laurits",  "photo": "laurits.png",  "teams": ["can", "cro"] },
+    { "id": "august",   "name": "August",   "photo": "august.png",   "teams": ["mar", "ned"] },
+    { "id": "nora",     "name": "Nora",     "photo": "nora.png",     "teams": ["nzl", "kor"] },
     { "id": "victoria", "name": "Victoria", "photo": "victoria.jpg", "teams": ["pan", "mex"] }
   ],
 

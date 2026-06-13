@@ -79,7 +79,7 @@ først når grupperne er spillet) tilføjer du med **＋ Tilføj kamp**.
            "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 }
 },
 "players": [
-  { "id": "kristan", "name": "Kristan", "photo": "kristan.jpg", "teams": ["civ", "tur"] }
+  { "id": "kristian", "name": "Kristian", "photo": "kristian.jpg", "teams": ["civ", "tur"] }
 ]
 ```
 

@@ -140,6 +140,7 @@ function renderTable() {
       <div id="notice"></div>
       <div class="editor-foot">
         ${loadBtn}
+        <button id="reseed" class="ghost-btn danger" type="button">Nulstil alt fra data.json</button>
         <button id="add" class="ghost-btn" type="button">＋ Tilføj kamp</button>
         <button id="save" class="primary-btn" type="button">Gem ændringer</button>
       </div>
@@ -149,6 +150,7 @@ function renderTable() {
   $('#add').addEventListener('click', onAdd);
   $('#save').addEventListener('click', onSave);
   const lb = $('#loadprog'); if (lb) lb.addEventListener('click', loadProgram);
+  $('#reseed').addEventListener('click', reseedAll);
   $$('.del').forEach(b => b.addEventListener('click', () => onDelete(+b.dataset.i)));
 
   // Editing any score/card auto-marks the row as played.
@@ -226,6 +228,29 @@ async function onSave() {
   } catch (err) {
     btn.disabled = false;
     notice('Kunne ikke gemme: ' + err.message, 'bad');
+  }
+}
+
+// Full reseed: overwrite the entire Firestore document with data.json.
+// Destructive — wipes any match results already entered. Confirm first.
+async function reseedAll() {
+  if (!confirm('Genindlæs ALT fra data.json? Dette overskriver hele dokumentet, '
+    + 'inkl. eventuelle indtastede resultater. Kan ikke fortrydes.')) return;
+  notice('Genindlæser alt fra data.json…');
+  const btn = $('#reseed');
+  btn.disabled = true;
+  try {
+    const res = await fetch('data.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const seed = await res.json();
+    seed.lastUpdated = today();
+    await setDoc(stateDoc, seed);
+    state.data = seed;
+    renderTable();
+    notice('Alt genindlæst fra data.json ✓');
+  } catch (err) {
+    btn.disabled = false;
+    notice('Kunne ikke genindlæse: ' + err.message, 'bad');
   }
 }
 
