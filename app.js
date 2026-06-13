@@ -1,6 +1,9 @@
 // World Cup sweepstake — static, data-driven scoreboard.
-// No build step: this module fetches data.json, aggregates each player's two
-// teams, ranks them, and renders the scoreboard + player detail views.
+// No build step: this module reads the data (live from Firestore, or bundled
+// data.json as fallback), aggregates each player's two teams, ranks them, and
+// renders the scoreboard + player detail views.
+
+import { stateDoc, onSnapshot, isConfigured } from './firebase-config.js';
 
 const FLAG_DIR = 'assets/flags';
 const PHOTO_DIR = 'assets/players';
@@ -14,6 +17,8 @@ const COLUMNS = [
   { key: 'goalsFor',     label: 'MF',      full: 'Mål for',       dir: 'desc' },
   { key: 'goalsAgainst', label: 'MI',      full: 'Mål imod',      dir: 'asc'  },
   { key: 'goalDiff',     label: 'Diff',    full: 'Målforskel',    dir: 'desc', signed: true },
+  { key: 'corners',      label: 'Hj',      full: 'Hjørnespark',   dir: 'desc' },
+  { key: 'goalKicks',    label: 'Ms',      full: 'Målspark',      dir: 'desc' },
   { key: 'yellow',       label: 'Gul',     full: 'Gule kort',     dir: 'asc'  },
   { key: 'red',          label: 'Rød',     full: 'Røde kort',     dir: 'asc'  },
 ];
@@ -27,6 +32,8 @@ const TEAM_COLUMNS = [
   { key: 'goalsFor',     label: 'MF',   full: 'Mål for',    dir: 'desc' },
   { key: 'goalsAgainst', label: 'MI',   full: 'Mål imod',   dir: 'asc'  },
   { key: 'goalDiff',     label: 'Diff', full: 'Målforskel', dir: 'desc', signed: true },
+  { key: 'corners',      label: 'Hj',   full: 'Hjørnespark', dir: 'desc' },
+  { key: 'goalKicks',    label: 'Ms',   full: 'Målspark',   dir: 'desc' },
   { key: 'yellow',       label: 'Gul',  full: 'Gule kort',  dir: 'asc'  },
   { key: 'red',          label: 'Rød',  full: 'Røde kort',  dir: 'asc'  },
   { key: 'points',       label: 'P',    full: 'Point',      dir: 'desc' },
@@ -81,6 +88,39 @@ function signClass(key, val) {
 
 /* ---------- data ---------- */
 
+// Add one rostered side of a match into the running team-stat object.
+function addSide(teams, id, gf, ga, yellow, red, corners, goalKicks) {
+  const t = teams[id];
+  if (!t) return;                       // non-rostered opponent → ignored
+  t.played++;
+  t.goalsFor += gf; t.goalsAgainst += ga;
+  t.yellow += yellow; t.red += red;
+  t.corners += corners; t.goalKicks += goalKicks;
+  if (gf > ga) t.won++; else if (gf === ga) t.drawn++; else t.lost++;
+}
+
+// The matches list is the source of truth: derive every team's raw stats from
+// it. Until the first save migrates the seed (matches still empty), fall back to
+// the stored per-team aggregates so the board keeps working.
+function teamStatsFrom(data) {
+  const teams = data.teams || {};
+  const matches = data.matches || [];
+  if (!matches.length) {
+    const out = {};
+    for (const [id, t] of Object.entries(teams)) out[id] = { corners: 0, goalKicks: 0, ...t };
+    return out;
+  }
+  const n = () => ({ played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, yellow: 0, red: 0, corners: 0, goalKicks: 0 });
+  const out = {};
+  for (const [id, t] of Object.entries(teams)) out[id] = { name: t.name, code: t.code, ...n() };
+  for (const m of matches) {
+    if (!m.played) continue;            // fixtures (not yet played) don't count
+    addSide(out, m.a, +m.ga || 0, +m.gb || 0, +m.ya || 0, +m.ra || 0, +m.ca || 0, +m.ka || 0);
+    addSide(out, m.b, +m.gb || 0, +m.ga || 0, +m.yb || 0, +m.rb || 0, +m.cb || 0, +m.kb || 0);
+  }
+  return out;
+}
+
 function aggregate(player, teams, w) {
   const teamList = (player.teams || []).map(id => teams[id]).filter(Boolean);
   const sum = f => teamList.reduce((a, t) => a + (Number(f(t)) || 0), 0);
@@ -93,6 +133,8 @@ function aggregate(player, teams, w) {
     goalsAgainst: sum(t => t.goalsAgainst),
     yellow:       sum(t => t.yellow),
     red:          sum(t => t.red),
+    corners:      sum(t => t.corners),
+    goalKicks:    sum(t => t.goalKicks),
   };
   totals.points = totals.won * 3 + totals.drawn;
   totals.goalDiff = totals.goalsFor - totals.goalsAgainst;
@@ -345,6 +387,8 @@ function teamStatRows(t) {
     ['Point', pts],
     ['Mål', `${t.goalsFor} : ${t.goalsAgainst}`],
     ['Målforskel', (gd > 0 ? '+' : '') + gd],
+    ['Hjørnespark', t.corners || 0],
+    ['Målspark', t.goalKicks || 0],
     ['Gule kort', t.yellow],
     ['Røde kort', t.red],
   ];
@@ -389,38 +433,68 @@ function sortedRows4Rank(row) {
 
 /* ---------- boot ---------- */
 
-async function boot() {
-  try {
-    const res = await fetch('data.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    state.data = data;
+// Populate state from a data object (same shape as data.json / the Firestore
+// `state/current` doc) and refresh the static header bits. Called on every
+// Firestore snapshot, so the board updates live when a match is saved.
+function applyData(data) {
+  state.data = data;
 
-    const w = data.fantasyWeights || { win: 3, draw: 1, goalFor: 1, goalAgainst: -1, yellow: -1, red: -3 };
-    state.rows = (data.players || []).map(p => aggregate(p, data.teams || {}, w));
+  const w = data.fantasyWeights || { win: 3, draw: 1, goalFor: 1, goalAgainst: -1, yellow: -1, red: -3 };
+  const teamStats = teamStatsFrom(data);
+  state.rows = (data.players || []).map(p => aggregate(p, teamStats, w));
 
-    state.teams = Object.entries(data.teams || {}).map(([id, t]) => ({
-      id, ...t,
-      points: t.won * 3 + t.drawn,
-      goalDiff: t.goalsFor - t.goalsAgainst,
-    }));
-    state.teamOwner = {};
-    (data.players || []).forEach(p => (p.teams || []).forEach(tid => { state.teamOwner[tid] = p.name; }));
+  state.teams = Object.entries(teamStats).map(([id, t]) => ({
+    id, ...t,
+    points: t.won * 3 + t.drawn,
+    goalDiff: t.goalsFor - t.goalsAgainst,
+  }));
+  state.teamOwner = {};
+  (data.players || []).forEach(p => (p.teams || []).forEach(tid => { state.teamOwner[tid] = p.name; }));
 
-    if (data.title) {
-      document.title = data.title;
-      $('#site-title').textContent = data.title;
-    }
-    $('#site-subtitle').textContent = data.subtitle || '';
-    if (data.lastUpdated) $('#last-updated').textContent = `Opdateret ${data.lastUpdated}`;
-    $('#player-count').textContent = `${state.rows.length} spiller${state.rows.length === 1 ? '' : 'e'}`;
-
-    window.addEventListener('hashchange', render);
-    render();
-  } catch (err) {
-    $('#app').innerHTML = `<p class="error">Kunne ikke indlæse data.json — ${esc(err.message)}.
-      Hvis du åbnede filen direkte, så kør en lokal server i mappen (se README).</p>`;
+  if (data.title) {
+    document.title = data.title;
+    $('#site-title').textContent = data.title;
   }
+  $('#site-subtitle').textContent = data.subtitle || '';
+  if (data.lastUpdated) $('#last-updated').textContent = `Opdateret ${data.lastUpdated}`;
+  $('#player-count').textContent = `${state.rows.length} spiller${state.rows.length === 1 ? '' : 'e'}`;
+}
+
+function showError(err) {
+  $('#app').innerHTML = `<p class="error">Kunne ikke indlæse data — ${esc(err.message)}.
+    Hvis du åbnede filen direkte, så kør en lokal server i mappen (se README).</p>`;
+}
+
+// Bundled data.json is the seed source and the offline/last-resort fallback.
+async function loadFallback() {
+  const res = await fetch('data.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+function useFallback(originalErr) {
+  loadFallback()
+    .then(data => { applyData(data); render(); })
+    .catch(() => showError(originalErr));
+}
+
+async function boot() {
+  window.addEventListener('hashchange', render);
+
+  // Without a real Firebase config, just run off bundled data.json.
+  if (!isConfigured) {
+    try { applyData(await loadFallback()); render(); }
+    catch (err) { showError(err); }
+    return;
+  }
+
+  // Live-subscribe to the single state document. Each change re-renders the
+  // current view, so a saved match appears within seconds with no reload.
+  onSnapshot(stateDoc, snap => {
+    if (!snap.exists()) return useFallback(new Error('Firestore er ikke seedet endnu'));
+    applyData(snap.data());
+    render();
+  }, err => useFallback(err));
 }
 
 boot();

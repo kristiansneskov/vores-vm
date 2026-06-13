@@ -13,16 +13,16 @@
   },
 
   "teams": {
-    "civ": { "name": "Elfenbenskysten",   "code": "ci", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
-    "tur": { "name": "Tyrkiet",        "code": "tr", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
-    "can": { "name": "Canada",        "code": "ca", "played": 1, "won": 0, "drawn": 1, "lost": 0, "goalsFor": 1, "goalsAgainst": 1, "yellow": 1, "red": 0 },
-    "cro": { "name": "Kroatien",       "code": "hr", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
-    "mar": { "name": "Marokko",       "code": "ma", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
-    "ned": { "name": "Holland",   "code": "nl", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
-    "nzl": { "name": "New Zealand",   "code": "nz", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
-    "kor": { "name": "Sydkorea",   "code": "kr", "played": 1, "won": 1, "drawn": 0, "lost": 0, "goalsFor": 2, "goalsAgainst": 1, "yellow": 1, "red": 0 },
-    "pan": { "name": "Panama",        "code": "pa", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
-    "mex": { "name": "Mexico",        "code": "mx", "played": 1, "won": 1, "drawn": 0, "lost": 0, "goalsFor": 2, "goalsAgainst": 0, "yellow": 1, "red": 1 }
+    "civ": { "name": "Elfenbenskysten", "code": "ci", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "tur": { "name": "Tyrkiet",         "code": "tr", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "can": { "name": "Canada",          "code": "ca", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "cro": { "name": "Kroatien",        "code": "hr", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "mar": { "name": "Marokko",         "code": "ma", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "ned": { "name": "Holland",         "code": "nl", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "nzl": { "name": "New Zealand",     "code": "nz", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "kor": { "name": "Sydkorea",        "code": "kr", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "pan": { "name": "Panama",          "code": "pa", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 },
+    "mex": { "name": "Mexico",          "code": "mx", "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "yellow": 0, "red": 0 }
   },
 
   "players": [
@@ -31,5 +31,36 @@
     { "id": "august",   "name": "August",   "photo": "august.jpg",   "teams": ["mar", "ned"] },
     { "id": "nora",     "name": "Nora",     "photo": "nora.jpg",     "teams": ["nzl", "kor"] },
     { "id": "victoria", "name": "Victoria", "photo": "victoria.jpg", "teams": ["pan", "mex"] }
+  ],
+
+  "matches": [
+    { "id": "mex-rsa", "date": "2026-06-11", "a": "mex", "aName": "", "b": "",    "bName": "Sydafrika", "ga": 2, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":1, "ra": 1, "yb": 0, "rb": 0, "played": true },
+    { "id": "kor-cze", "date": "2026-06-11", "a": "kor", "aName": "", "b": "",    "bName": "Tjekkiet",  "ga": 2, "gb": 1, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":1, "ra": 0, "yb": 0, "rb": 0, "played": true },
+    { "id": "can-bih", "date": "2026-06-12", "a": "can", "aName": "", "b": "",    "bName": "Bosnien",   "ga": 1, "gb": 1, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":1, "ra": 0, "yb": 0, "rb": 0, "played": true },
+    { "id": "tur-aus", "date": "2026-06-13", "a": "tur", "aName": "", "b": "",    "bName": "Australien", "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "mar-bra", "date": "2026-06-13", "a": "mar", "aName": "", "b": "",    "bName": "Brasilien",  "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "civ-ecu", "date": "2026-06-14", "a": "civ", "aName": "", "b": "",    "bName": "Ecuador",    "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "ned-jpn", "date": "2026-06-14", "a": "ned", "aName": "", "b": "",    "bName": "Japan",      "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "nzl-irn", "date": "2026-06-15", "a": "nzl", "aName": "", "b": "",    "bName": "Iran",       "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "cro-eng", "date": "2026-06-17", "a": "cro", "aName": "", "b": "",    "bName": "England",    "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "pan-gha", "date": "2026-06-17", "a": "pan", "aName": "", "b": "",    "bName": "Ghana",      "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "mex-kor", "date": "2026-06-18", "a": "mex", "aName": "", "b": "kor", "bName": "",           "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "can-qat", "date": "2026-06-18", "a": "can", "aName": "", "b": "",    "bName": "Qatar",      "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "mar-sco", "date": "2026-06-19", "a": "mar", "aName": "", "b": "",    "bName": "Skotland",   "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "tur-par", "date": "2026-06-19", "a": "tur", "aName": "", "b": "",    "bName": "Paraguay",   "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "civ-ger", "date": "2026-06-20", "a": "civ", "aName": "", "b": "",    "bName": "Tyskland",   "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "ned-swe", "date": "2026-06-20", "a": "ned", "aName": "", "b": "",    "bName": "Sverige",    "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "nzl-egy", "date": "2026-06-21", "a": "nzl", "aName": "", "b": "",    "bName": "Egypten",    "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "pan-cro", "date": "2026-06-23", "a": "pan", "aName": "", "b": "cro", "bName": "",           "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "mex-cze", "date": "2026-06-24", "a": "mex", "aName": "", "b": "",    "bName": "Tjekkiet",   "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "can-sui", "date": "2026-06-24", "a": "can", "aName": "", "b": "",    "bName": "Schweiz",    "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "mar-hai", "date": "2026-06-24", "a": "mar", "aName": "", "b": "",    "bName": "Haiti",      "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "kor-rsa", "date": "2026-06-25", "a": "kor", "aName": "", "b": "",    "bName": "Sydafrika",  "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "tur-usa", "date": "2026-06-25", "a": "tur", "aName": "", "b": "",    "bName": "USA",        "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "civ-cuw", "date": "2026-06-25", "a": "civ", "aName": "", "b": "",    "bName": "Curaçao",    "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "ned-tun", "date": "2026-06-25", "a": "ned", "aName": "", "b": "",    "bName": "Tunesien",   "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "nzl-bel", "date": "2026-06-26", "a": "nzl", "aName": "", "b": "",    "bName": "Belgien",    "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "pan-eng", "date": "2026-06-27", "a": "pan", "aName": "", "b": "",    "bName": "England",    "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false },
+    { "id": "cro-gha", "date": "2026-06-27", "a": "cro", "aName": "", "b": "",    "bName": "Ghana",      "ga": 0, "gb": 0, "ca": 0, "cb": 0, "ka": 0, "kb": 0, "ya":0, "ra": 0, "yb": 0, "rb": 0, "played": false }
   ]
 }

@@ -1,36 +1,69 @@
 # Vores VM — stilling
 
-En selvstændig, skrivebeskyttet statisk side til et hyggeligt familie-VM. Hver spiller
-har to lande; stillingen rangerer spillerne efter de samlede statistikker for deres to
-hold. Ingen database, intet build-trin, ingen logins — du opdaterer én fil og udgiver igen.
+En statisk side til et hyggeligt familie-VM. Hver spiller har to lande; stillingen
+rangerer spillerne efter de samlede statistikker for deres to hold. Intet build-trin.
+Kampe indtastes via en lille formular (`admin.html`) og gemmes i en **gratis Firebase
+Firestore-database**; stillingen læser data live derfra og opdateres på få sekunder —
+uden git, uden push.
 
 ## Hvad er her
 
 ```
-index.html      sidens skelet
-styles.css      al styling (mobil-først, responsiv, lyst + mørkt tema)
-app.js          indlæser data.json, lægger holdene sammen, rangerer, viser
-data.json       ← den eneste fil du redigerer fra dag til dag
+index.html        sidens skelet
+admin.html        formular til at indtaste kampe (kræver adgangskode)
+styles.css        al styling (mobil-først, responsiv, lyst + mørkt tema)
+app.js            læser data live fra Firestore (data.json som reserve), rangerer, viser
+admin.js          formularens logik: log ind, beregn resultat, gem i Firestore
+firebase-config.js  ← indsæt din firebaseConfig her (engangs)
+data.json         startdata + offline-reserve (ikke længere den daglige fil)
 assets/
   players/      spillerbilleder + placeholder.svg som reserve
   flags/        medfølgende SVG-flag (offline) opslået efter ISO-kode
 .nojekyll       får GitHub Pages til at vise filerne, som de er
 ```
 
-## Daglig opdatering (hele arbejdsgangen)
+## Daglig opdatering (kamptabellen)
 
-1. Åbn **`data.json`** og opdatér hvert holds rå tal efter dagens kampe:
-   `played, won, drawn, lost, goalsFor, goalsAgainst, yellow, red`.
-   De svarer 1:1 til den officielle gruppespilstabel plus antal kort.
-2. Ret `"lastUpdated"`.
-3. Commit og push:
-   ```
-   git add -A && git commit -m "Opdatering 2026-06-14" && git push
-   ```
-   GitHub Pages udgiver automatisk igen på ca. 1 minut.
+Hele gruppespillet for jeres 10 hold ligger allerede som rækker i tabellen — du skal kun
+skrive resultaterne ind, efterhånden som kampene spilles.
 
-Du indtaster aldrig point, målforskel, fantasy-point eller spillertotaler — appen
-beregner det hele ud fra de rå tal, så intet kan komme ud af trit.
+1. Åbn **`admin.html`** (linket "Redigér kampe" nederst på siden).
+2. Skriv adgangskoden ind første gang (huskes på enheden bagefter).
+3. Find kampens række og skriv **mål** og evt. **kort**. Fluebenet i **Spillet** sættes
+   automatisk — kun spillede kampe tæller i stillingen.
+4. Tryk **Gem ændringer** — stillingen opdateres live på alle skærme med det samme.
+
+Sejr/uafgjort/tab, point og målforskel beregnes automatisk ud fra målene. Hold udenfor
+puljen står som fri tekst (fx "Australien") og får ingen statistik. Slutspilskampe (kendes
+først når grupperne er spillet) tilføjer du med **＋ Tilføj kamp**.
+
+> **Allerførste gang:** hvis tabellen er tom, tryk **Indlæs hele kampprogrammet** for at
+> hente alle 28 gruppekampe ind i Firestore. Derefter er rækkerne der bare.
+
+## Opsætning af Firebase (engangs, gratis)
+
+1. Opret et gratis projekt på [console.firebase.google.com](https://console.firebase.google.com).
+2. **Build → Firestore Database → Create database** (vælg en europæisk region,
+   "production mode").
+3. **Build → Authentication → Get started → Sign-in method → Email/Password → Enable.**
+   Gå til fanen **Users → Add user**, og opret én bruger med e-mail
+   `vm@vores-vm.local` og en valgfri **adgangskode** (det er den, din søn taster).
+4. **Project settings (tandhjul) → Your apps → Web (`</>`)** → registrér en app, og
+   kopiér `firebaseConfig`-objektet ind i **`firebase-config.js`** (erstat `PASTE_ME`).
+5. **Firestore → Rules**, indsæt og publicér:
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /{doc=**} {
+         allow read: if true;            // stillingen er offentlig
+         allow write: if request.auth != null;  // kun med adgangskode (login)
+       }
+     }
+   }
+   ```
+6. Åbn `admin.html`, log ind, og tryk **Importér data.json** én gang for at lægge de
+   nuværende hold og spillere ind i Firestore. Derefter er I klar.
 
 ## Tilføj / ret spillere og hold
 
@@ -81,7 +114,9 @@ python3 -m http.server 8000
 2. Repoets **Settings → Pages → Build and deployment → Source: Deploy from a branch**,
    vælg **`main`** / **`/ (root)`**, Save.
 3. Siden går live på `https://<dit-brugernavn>.github.io/vores-vm/` inden for et minut.
-   Da der ikke er noget build-trin, er hvert `git push` en udgivelse.
+   Da der ikke er noget build-trin, er hvert `git push` en udgivelse. Bemærk: kun
+   *kode*-ændringer kræver push — *kampresultater* gemmes i Firestore og kræver intet
+   push (de vises live).
 
 ### Vercel-alternativ
 

@@ -4,31 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b1437" />
-  <title>Vores VM</title>
-  <meta name="description" content="Stillingen i familiens og vennernes VM." />
+  <title>Kampe · Vores VM</title>
+  <meta name="robots" content="noindex" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%E2%9A%BD</text></svg>" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <h1 id="site-title">Vores VM</h1>
-      <p id="site-subtitle" class="subtitle"></p>
-      <p id="last-updated" class="updated"></p>
+      <h1>Kampe</h1>
+      <p class="subtitle">Redigér alle kampe i tabellen — stillingen opdateres med det samme.</p>
     </div>
   </header>
 
-  <main id="app" class="wrap" aria-live="polite">
+  <main id="admin" class="wrap">
     <p class="loading">Indlæser…</p>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>Skrivebeskyttet stilling · opdateres dagligt · <span id="player-count"></span></p>
-      <p><a href="admin.html" class="admin-link">Redigér kampe</a></p>
+      <p><a href="./">← Tilbage til stillingen</a></p>
     </div>
   </footer>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="admin.js"></script>
 </body>
 </html>
