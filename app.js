@@ -67,7 +67,8 @@ function flagImg(team, cls = 'flag') {
 }
 
 function photoImg(player, cls) {
-  const src = player.photo ? `${PHOTO_DIR}/${esc(player.photo)}` : FALLBACK_PHOTO;
+  const file = player.photo || `${player.id}.png`;
+  const src = `${PHOTO_DIR}/${esc(file)}`;
   return `<img class="${cls}" src="${src}" alt="${esc(player.name)}" loading="lazy"
     onerror="this.onerror=null;this.src='${FALLBACK_PHOTO}'">`;
 }
