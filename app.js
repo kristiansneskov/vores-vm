@@ -13,12 +13,11 @@ const FALLBACK_PHOTO = `${PHOTO_DIR}/placeholder.svg`;
 // Stat columns shown on the scoreboard. `dir` is the natural "best first"
 // direction. Add a stat to data.json + one line here to add a column.
 const COLUMNS = [
-  { key: 'points',       label: 'P',       full: 'Point',         dir: 'desc' },
+  { key: 'played',       label: 'K',       full: 'Kampe',         dir: 'desc' },
   { key: 'goalsFor',     label: 'MF',      full: 'Mål for',       dir: 'desc' },
   { key: 'goalsAgainst', label: 'MI',      full: 'Mål imod',      dir: 'asc'  },
   { key: 'goalDiff',     label: 'Diff',    full: 'Målforskel',    dir: 'desc', signed: true },
-  { key: 'yellow',       label: 'Gul',     full: 'Gule kort',     dir: 'asc'  },
-  { key: 'red',          label: 'Rød',     full: 'Røde kort',     dir: 'asc'  },
+  { key: 'points',       label: 'P',       full: 'Point',         dir: 'desc' },
 ];
 
 // Columns for the full per-nation table (the "Lande" view).
